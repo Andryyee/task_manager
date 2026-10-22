@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: task_manager
+  jpa:
+    show-sql: true
+server:
+  port: 8081
