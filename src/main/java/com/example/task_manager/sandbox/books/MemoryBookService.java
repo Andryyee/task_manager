@@ -1,7 +1,8 @@
-package com.example.task_manager.sandbox;
+package com.example.task_manager.sandbox.books;
 
-import com.example.task_manager.Book;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -21,5 +22,15 @@ public class MemoryBookService {
     public void deleteById(Long id) {
         if (repository.findById(id).isEmpty()) throw new BookNotFoundException(id);
         repository.deleteById(id);
+    }
+    public Book update(Long id, UpdateBookRequest request){
+        Book book = findById(id);
+        if (request.title() != null) book.setTitle(request.title());
+        if (request.available() != null) book.setAvailable(request.available());
+        return repository.save(book);
+    }
+    public Book create(CreateBookRequest request){
+        Book book = new Book(request.title(), request.annotation());
+        return repository.save(book);
     }
 }

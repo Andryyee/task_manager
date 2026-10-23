@@ -1,4 +1,4 @@
-package com.example.task_manager.sandbox;
+package com.example.task_manager.sandbox.greeting;
 
 import org.springframework.stereotype.Component;
 

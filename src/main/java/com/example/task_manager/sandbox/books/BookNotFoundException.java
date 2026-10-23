@@ -1,4 +1,4 @@
-package com.example.task_manager.sandbox;
+package com.example.task_manager.sandbox.books;
 
 public class BookNotFoundException extends RuntimeException {
     public BookNotFoundException(Long id) {

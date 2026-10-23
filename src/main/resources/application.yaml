@@ -3,5 +3,18 @@ spring:
     name: task_manager
   jpa:
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: create-drop     # или update для файловой базы
+  datasource:
+    url: jdbc:h2:mem:librarydb          # в памяти, с понятным именем
+    # url: jdbc:h2:file:./data/librarydb  # или файл data/librarydb.mv.db в папке проекта
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
 server:
   port: 8081

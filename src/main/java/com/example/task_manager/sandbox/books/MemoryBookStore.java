@@ -1,9 +1,7 @@
-package com.example.task_manager.sandbox;
+package com.example.task_manager.sandbox.books;
 
-import com.example.task_manager.Book;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
