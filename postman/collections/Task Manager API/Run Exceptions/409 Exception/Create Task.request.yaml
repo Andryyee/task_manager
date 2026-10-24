@@ -1,0 +1,31 @@
+$kind: http-request
+url: "{{baseUrl}}/api/tasks"
+method: POST
+body:
+  type: json
+  content: "{\r\n    \"title\":\"A\"\r\n}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Статус 201\", () => pm.response.to.have.status(201));\r
+
+      pm.test(\"Есть заголовок Location\", () => pm.response.to.have.header(\"Location\"));\r
+
+      \r
+
+      const task = pm.response.json();\r
+
+      pm.test(\"\", () => {\r
+
+      \    pm.expect(task.id).to.be.a(\"number\"),\r
+
+      \    pm.expect(task.createdAt).to.be.a(\"string\")\r
+
+      \    pm.expect(task.completed).to.eql(false)\r
+
+      });\r
+
+      \r
+
+      pm.collectionVariables.set(\"taskId\", task.id);"
+    language: text/javascript
+order: 1000

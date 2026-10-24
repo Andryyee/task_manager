@@ -1,0 +1,11 @@
+$kind: http-request
+url: "{{baseUrl}}/api/tasks"
+method: POST
+body:
+  type: json
+  content: "{\r\n    \"title\": \"\"\r\n}"
+scripts:
+  - type: afterResponse
+    code: pm.test("Статус 400", () => pm.response.to.have.status(400));
+    language: text/javascript
+order: 1000

@@ -13,6 +13,9 @@ public class TaskEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Version
+    private Long version;
+
     @NotBlank
     @Column(length = 255, nullable = false)
     private String title;
@@ -32,7 +35,7 @@ public class TaskEntity {
         this.title = title;
         this.description = description;
     }
-    
+
     @PrePersist
     void onCreate(){
         if (createdAt == null) createdAt = Instant.now().truncatedTo(ChronoUnit.SECONDS);
@@ -41,6 +44,8 @@ public class TaskEntity {
     public Long getId() {return id;}
 
     public void setId(Long id) {this.id = id;}
+
+    public Long getVersion() {return version;}
 
     public String getTitle() {return title;}
 
@@ -55,6 +60,4 @@ public class TaskEntity {
     public void setCompleted(boolean completed) {this.completed = completed;}
 
     public Instant getCreatedAt() {return createdAt;}
-
-    public void setCreatedAt(Instant createdAt) {this.createdAt = createdAt;}
 }

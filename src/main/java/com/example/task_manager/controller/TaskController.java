@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -42,32 +43,35 @@ public class TaskController {
             content = @Content(mediaType = "application/problem+json",
                     schema = @Schema(implementation = ProblemDetail.class)))
     @GetMapping("/tasks/{id}")
-    public TaskResponse findById(@PathVariable Long id) {
-        return TaskResponse.from(service.findById(id));
-    }
+    public TaskResponse findById(@PathVariable Long id) { return service.findById(id); }
 
     @Operation(summary = "Создать задачу")
     @ApiResponse(responseCode = "201", description = "Задача создана")
     @ApiResponse(responseCode = "400", description = "Неверный запрос")
     @PostMapping("/tasks")
-    public ResponseEntity<TaskResponse> create(@RequestBody CreateTaskRequest req){
-        TaskEntity task = service.create(req);
+    public ResponseEntity<TaskResponse> create(@Valid @RequestBody CreateTaskRequest req){
+        TaskResponse created = service.create(req);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(task.getId(), task.getCreatedAt())
+                .buildAndExpand(created.id(), created.createdAt())
                 .toUri();
-        return ResponseEntity.created(location).body(TaskResponse.from(task));
+        return ResponseEntity.created(location).body(created);
     }
 
     @Operation(summary = "Изменить задачу")
     @ApiResponse(responseCode = "200", description = "Задача изменена")
-    @ApiResponse(responseCode = "400", description = "Неверный запрос")
+    @ApiResponse(responseCode = "400", description = "Неверный запрос",
+            content = @Content(mediaType = "application/problem+json",
+                    schema = @Schema(implementation = ProblemDetail.class)))
     @ApiResponse(responseCode = "404", description = "Задача не найдена",
             content = @Content(mediaType = "application/problem+json",
                     schema = @Schema(implementation = ProblemDetail.class)))
+    @ApiResponse(responseCode = "409", description = "Конфликт версий",
+            content = @Content(mediaType = "application/problem+json",
+                    schema = @Schema(implementation = ProblemDetail.class)))
     @PatchMapping("/tasks/{id}")
-    public TaskResponse update(@PathVariable Long id, @RequestBody UpdateTaskRequest req){
-        return TaskResponse.from(service.updateTask(id, req));
+    public TaskResponse update(@PathVariable Long id, @Valid @RequestBody UpdateTaskRequest req){
+        return service.updateTask(id, req);
     }
 
     @Operation(summary = "Удалить задачу")

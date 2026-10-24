@@ -1,6 +1,8 @@
 package com.example.task_manager.exception;
 
 import org.springframework.http.*;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -32,5 +34,21 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
         problemDetail.setDetail("Одно или несколько полей заполнены неверно");
         problemDetail.setProperty("errors", errors);
         return handleExceptionInternal(ex, problemDetail, headers, status, request);
+    }
+
+    @Override
+    public ResponseEntity<Object> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, "Не удалдось прочитать тело запроса");
+        problemDetail.setTitle("Некорректное тело запроса");
+        return handleExceptionInternal(ex, problemDetail, headers, status, request);
+    }
+
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ProblemDetail handleObjectOptimisticLockingFailureException(ObjectOptimisticLockingFailureException exception){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT,
+                "Задача была изменена другим клиентом. Загрузите актуальную версию и повторите попытку");
+        problemDetail.setTitle("Конфликт версий");
+        return problemDetail;
     }
 }

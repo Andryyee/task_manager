@@ -1,0 +1,8 @@
+$kind: http-request
+name: Update Task
+url: "{{baseUrl}}/api/tasks/1"
+method: PATCH
+body:
+  type: json
+  content: "{\r\n    \"title\":\"B\"\r\n}"
+order: 3000

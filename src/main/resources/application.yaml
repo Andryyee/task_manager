@@ -2,6 +2,7 @@ spring:
   application:
     name: task_manager
   jpa:
+    open-in-view: false
     show-sql: true
     properties:
       hibernate:
@@ -9,7 +10,7 @@ spring:
     hibernate:
       ddl-auto: create-drop
   datasource:
-    url: jdbc:h2:mem:librarydb
+    url: jdbc:h2:mem:taskmanagerdb
     username: sa
     password:
   h2:

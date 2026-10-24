@@ -19,10 +19,12 @@ public class TaskService {
         this.repository = repository;
     }
 
+    private TaskEntity getOrThrow(Long id){ return repository.findById(id).orElseThrow(() -> new TaskNotFoundException(id)); }
+
     @Transactional
-    public TaskEntity create(CreateTaskRequest req) {
+    public TaskResponse create(CreateTaskRequest req) {
         TaskEntity task = new TaskEntity(req.title(), req.description());
-        return repository.save(task);
+        return TaskResponse.from(repository.save(task));
     }
 
     @Transactional(readOnly = true)
@@ -34,22 +36,21 @@ public class TaskService {
     }
 
     @Transactional(readOnly = true)
-    public TaskEntity findById(Long id){
-        return repository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
+    public TaskResponse findById(Long id){
+        return TaskResponse.from(getOrThrow(id));
     }
 
     @Transactional
-    public TaskEntity updateTask(Long id, UpdateTaskRequest req){
-        TaskEntity task = findById(id);
+    public TaskResponse updateTask(Long id, UpdateTaskRequest req){
+        TaskEntity task = getOrThrow(id);
         if (req.title() != null) task.setTitle(req.title());
         if (req.description() != null) task.setDescription(req.description());
         if (req.completed() != null) task.setCompleted(req.completed());
-        return repository.save(task);
+        return TaskResponse.from(task);
     }
 
     @Transactional
     public void deleteById(Long id){
-        findById(id);
-        repository.deleteById(id);
+        repository.delete(getOrThrow(id));
     }
 }
