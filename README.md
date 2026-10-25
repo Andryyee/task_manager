@@ -20,10 +20,108 @@ ___
 ```mermaid
 erDiagram
   TaskEntity{
-    bigint id PK,
-    bigint version "NOT NULL",
-    varchar(255) title "NOT NULL" 
+    bigint id PK
+    bigint version "NOT NULL"
+    varchar(255) title "NOT NULL"
+    varchar(2000) description
+    bool completed "NOT NULL"
+    DATE createdAt "NOT NULL"
   }
+```
+
+## Диаграмма классов
+
+```mermaid
+classDiagram
+    class JpaRepository {<<interface>>}
+    class ResponseEntityExceptionHandler{<<abstract>>}
+    class RuntimeException
+    class TaskNotFoundException
+    class ResponseEntity
+    class ObjectOptimisticLockingFailureException
+    class ProblemDetail
+    class TaskController{
+        -TaskService service
+        +findAll(Boolean completed) List~TaskResponse~
+        +findById(Long id) TaskResponse
+        +create(CreateTaskRequest req) ResponseEntity~TaskResponse~
+        +update(Long id, UpdateTaskRequest req) TaskResponse
+        +delete(Long id) ResponseEntity~Void~
+    }
+    class TaskService{
+        -TaskRepository repository
+        -getOrThrow(Long id) TaskEntity
+        +create(CreateTaskRequest req) TaskResponse
+        +findAll(Boolean completed) List~TaskResponse~
+        +findById(Long id) TaskResponse
+        +updateTask(Long id, UpdateTaskRequest req) TaskResponse
+        +deleteById(Long id) void 
+    }
+    class TaskRepository{
+        <<interface>>
+        +findByCompleted(boolean completed) List~TaskEntity~
+    }
+    class TaskEntity{
+        -Long id
+        -Long version
+        -String title
+        -String description
+        -boolean completed
+        -Instant createdAt
+        +onCreate() void
+    }
+    class CreateTaskRequest{
+        <<record>>
+        -String title
+        -String description
+    }
+    class UpdateTaskRequest{
+        <<record>>
+        -String title
+        -String description
+        -Boolean completed
+    }
+    class TaskResponse{
+        <<record>>
+        -Long id
+        -String title
+        -String description
+        -boolean completed
+        -Instant createdAt
+        +from(TaskEntity task) TaskResponse$
+    }
+    class ExceptionsHandler{
+        +handleNotFound(TaskNotFoundException exception) ProblemDetail
+        #handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,HttpStatusCode status, WebRequest request) ResponseEntity~Object~
+        #handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) ResponseEntity~Object~ 
+        +handleObjectOptimisticLockingFailureException(ObjectOptimisticLockingFailureException exception) ProblemDetail 
+    }
+
+    TaskController --> TaskService
+    TaskController ..> CreateTaskRequest
+    TaskController ..> UpdateTaskRequest
+    TaskController ..> TaskResponse
+    TaskController ..> ResponseEntity
+
+    TaskService --> TaskRepository
+    TaskService ..> TaskEntity
+    TaskService ..> CreateTaskRequest
+    TaskService ..> UpdateTaskRequest
+    TaskService ..> TaskResponse
+    TaskService ..> TaskNotFoundException
+
+    TaskRepository --|> JpaRepository
+    TaskRepository ..> TaskEntity
+
+    ExceptionsHandler --|> ResponseEntityExceptionHandler
+    ExceptionsHandler ..> ProblemDetail
+    ExceptionsHandler ..> ResponseEntity
+    ExceptionsHandler ..> ObjectOptimisticLockingFailureException
+    ExceptionsHandler ..> TaskNotFoundException
+
+    TaskNotFoundException --|> RuntimeException
+
+    TaskResponse ..> TaskEntity
 ```
 
 ## Запуск
