@@ -19,13 +19,13 @@ ___
 
 ```mermaid
 erDiagram
-  TaskEntity{
+  tasks{
     bigint id PK
     bigint version "NOT NULL"
     varchar(255) title "NOT NULL"
     varchar(2000) description
-    bool completed "NOT NULL"
-    DATE createdAt "NOT NULL"
+    boolean status
+    timestamp(6)_with_time_zone created_at
   }
 ```
 
