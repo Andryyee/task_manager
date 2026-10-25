@@ -23,7 +23,7 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    public ResponseEntity<Object> handleMethodArgumentNotValid(
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers,
             HttpStatusCode status, WebRequest request){
         Map<String, String> errors = new LinkedHashMap<>();
@@ -37,9 +37,9 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    public ResponseEntity<Object> handleHttpMessageNotReadable(
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(
             HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, "Не удалдось прочитать тело запроса");
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, "Не удалось прочитать тело запроса");
         problemDetail.setTitle("Некорректное тело запроса");
         return handleExceptionInternal(ex, problemDetail, headers, status, request);
     }

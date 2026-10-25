@@ -3,7 +3,6 @@ package com.example.task_manager.controller;
 import com.example.task_manager.dto.CreateTaskRequest;
 import com.example.task_manager.dto.TaskResponse;
 import com.example.task_manager.dto.UpdateTaskRequest;
-import com.example.task_manager.model.TaskEntity;
 import com.example.task_manager.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
